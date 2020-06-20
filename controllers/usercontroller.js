@@ -40,7 +40,7 @@ UserModel
 
 router.post('/login', (req, res) => { //THIS WORKS
 UserModel.findOne({
-    where : { username: req.body.user.username }
+    where : { userName: req.body.user.username }
 }).then(
     function(user) {
         if (user){
