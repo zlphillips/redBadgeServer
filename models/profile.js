@@ -1,6 +1,10 @@
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('profile', {
-      profilePic: DataTypes.BLOB,
-      bio: DataTypes.STRING,
+      profilePic: {
+          type: DataTypes.BLOB,
+        allowNull: true},
+      bio: {
+          type: DataTypes.STRING,
+        allowNull: true},
     });
   };

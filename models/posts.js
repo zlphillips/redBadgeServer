@@ -1,9 +1,12 @@
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('post', {
-      username: DataTypes.STRING,
-      media: DataTypes.BLOB,
+      media: {
+          type: DataTypes.BLOB,
+        allowNull: true
+    },
       description: DataTypes.STRING,
-      datePosted: DataTypes.STRING,
-      likes: DataTypes.BOOLEAN
+      likes: {
+          type: DataTypes.INTEGER,
+            defaultValue: 0}
     });
   };
