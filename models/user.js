@@ -1,4 +1,4 @@
-export = function (sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('user', {
     firstName: {
       type: DataTypes.STRING,

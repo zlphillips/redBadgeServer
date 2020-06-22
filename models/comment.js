@@ -1,9 +1,10 @@
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('comment', {
-      username: DataTypes.STRING,
-      media: DataTypes.BLOB,
+      media:{
+      type: DataTypes.BLOB,
+      allowNull: true
+      },
       description: DataTypes.STRING,
-      datePosted: DataTypes.STRING,
-      likes: DataTypes.BOOLEAN
+      likes: DataTypes.INTEGER
     });
   };

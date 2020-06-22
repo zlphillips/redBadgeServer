@@ -13,8 +13,7 @@ router.post('/signup', (req, res) => {  //THIS WORKS
     var userName = req.body.user.username;
     var password = req.body.user.password;
 
-UserModel
-    .create({
+UserModel.create({
         firstName: firstName,
         lastName: lastName,
         email: email,

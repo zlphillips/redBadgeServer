@@ -13,4 +13,22 @@ sequelize.authenticate().then(
     }
 );
 
+let userModel = sequelize.import('./models/user')
+let profileModel = sequelize.import('./models/profile')
+let postsModel = sequelize.import('./models/posts')
+let commentModel = sequelize.import('./models/comment')
+
+userModel.hasOne(profileModel);
+profileModel.belongsTo(userModel);
+userModel.hasMany(postsModel);
+postsModel.belongsTo(userModel);
+userModel.hasMany(commentModel);
+commentModel.belongsTo(userModel);
+postsModel.hasMany(commentModel);
+commentModel.belongsTo(postsModel);
+
+
+
+
+
 module.exports = sequelize;
