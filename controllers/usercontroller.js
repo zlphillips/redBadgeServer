@@ -7,18 +7,13 @@ var bcrypt = require('bcryptjs')
 
 //Sign Up
 router.post('/signup', (req, res) => {  //THIS WORKS
-    var firstName = req.body.user.firstName;
-    var lastName = req.body.user.lastName;
-    var email = req.body.user.email;
-    var userName = req.body.user.username;
-    var password = req.body.user.password;
 
 UserModel.create({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        userName: userName,
-        passwordhash: bcrypt.hashSync(password, 10)
+        firstName: req.body.user.firstName,
+        lastName: req.body.user.lastName,
+        email:req.body.user.email,
+        username: req.body.user.username,
+        passwordhash: req.body.user.password
     })
     .then(
         function success(user) {

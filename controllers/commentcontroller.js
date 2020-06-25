@@ -13,8 +13,7 @@ router.post('/new-comment', validateSession, (req, res) => {
     let datePosted = req.body.post.datePosted;
     let likes = req.body.post.likes;
 
-CommentModel
-    .create({
+CommentModel.create({
         media: media,
         description: description,
         datePosted: datePosted,

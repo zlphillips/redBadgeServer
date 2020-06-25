@@ -3,23 +3,21 @@ let router = express.Router();
 let sequelize = require("../db");
 let PostModel = sequelize.import("../models/posts")
 
+
 let validateSession = require('../middleware/validate-session')
 
 //New Post
 router.post('/new-post', validateSession, (req, res) => {
     let media = req.body.post.media;
-    let owner = req.body.user.username;
-    let description = req.body.post.desription;
-    let datePosted = req.body.post.datePosted; 
+    let description = req.body.post.description;
     let likes = req.body.post.likes;
+    let owner = req.user.id
 
-PostModel
-    .create({
+PostModel.create({
         media: media,
         description: description,
-        datePosted: datePosted,
         likes: likes,
-        owner: owner
+        userId: owner
     })
     .then (databaseData => {
         res.json({

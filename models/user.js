@@ -11,13 +11,13 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
-    userName: {
+    username: {
       type: DataTypes.STRING,
       allowNull: false
     },
     passwordhash: {
-    type: DataTypes.STRING,
-    allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false
     }
   });
 };
