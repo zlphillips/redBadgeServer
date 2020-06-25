@@ -6,7 +6,8 @@ var jwt = require('jsonwebtoken')
 var bcrypt = require('bcryptjs')
 
 //Sign Up
-router.post('/signup', (req, res) => {  //THIS WORKS
+
+router.post('/signup', (req, res) => {  //THIS WORKS - "username" in postman needs to be all lowercase
     var firstName = req.body.user.firstName;
     var lastName = req.body.user.lastName;
     var email = req.body.user.email;
@@ -40,7 +41,7 @@ UserModel
 
 router.post('/login', (req, res) => { //THIS WORKS
 UserModel.findOne({
-    where : { username: req.body.user.username }
+    where : { userName: req.body.user.username }
 }).then(
     function(user) {
         if (user){
