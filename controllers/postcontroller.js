@@ -10,13 +10,13 @@ let validateSession = require('../middleware/validate-session')
 router.post('/new-post', validateSession, (req, res) => {
     let media = req.body.post.media;
     let description = req.body.post.description;
-    let likes = req.body.post.likes;
+    // let likes = req.body.post.likes;
     let owner = req.user.id
 
 PostModel.create({
         media: media,
         description: description,
-        likes: likes,
+        // likes: likes,
         userId: owner
     })
     .then (databaseData => {

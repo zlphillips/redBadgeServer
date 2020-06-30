@@ -3,8 +3,9 @@ const User = require('../db').import('../models/user');
 
 const validateSession = (req, res, next) => { 
     const token = req.headers.authorization;
-    console.log(token)
+    console.log(req.headers)
     jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+        console.log(`INVALID TOKEN: ${decodedToken}`)
         if (!err && decodedToken) {
             User.findOne({ where: {id: decodedToken.id}})
             .then(user => {
