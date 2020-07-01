@@ -4,6 +4,7 @@ var sequelize = require("../db");
 var UserModel = sequelize.import('../models/user');
 var jwt = require('jsonwebtoken')
 var bcrypt = require('bcryptjs')
+let validateSession = require('../middleware/validate-session')
 
 //Sign Up
 router.post('/signup', (req, res) => {  //THIS WORKS
@@ -57,6 +58,14 @@ UserModel.findOne({
         }
     }
  )
+})
+
+
+
+router.get('/:id', validateSession, (req, res) => {
+    UserModel.findOne({where: {id: req.params.id}})
+    .then(profile => res.status(200).json(profile))
+    .catch(err => res.status(500).json(err));
 })
 
 
