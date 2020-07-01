@@ -7,13 +7,13 @@ var bcrypt = require('bcryptjs')
 
 //Sign Up
 router.post('/signup', (req, res) => {  //THIS WORKS
-
+const passwordhash = bcrypt.hashSync(req.body.user.password, 12)
 UserModel.create({
         firstName: req.body.user.firstName,
         lastName: req.body.user.lastName,
         email:req.body.user.email,
         username: req.body.user.username,
-        passwordhash: req.body.user.password
+        passwordhash: passwordhash
     })
     .then(
         function success(user) {
@@ -34,7 +34,7 @@ UserModel.create({
 
 router.post('/login', (req, res) => { //THIS WORKS
 UserModel.findOne({
-    where : { userName: req.body.user.username }
+    where : { username: req.body.user.username }
 }).then(
     function(user) {
         if (user){
