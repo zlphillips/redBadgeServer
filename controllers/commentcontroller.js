@@ -7,18 +7,14 @@ let validateSession = require('../middleware/validate-session')
 
 //New comment
 router.post('/new-comment', validateSession, (req, res) => {
-    let media = req.body.post.media;
-    let owner = req.body.user.username;
-    let description = req.body.post.desription; 
-    let datePosted = req.body.post.datePosted;
-    let likes = req.body.post.likes;
+    let media = req.body.comment.media;
+    let owner = req.user.id;
+    let description = req.body.comment.description; 
 
 CommentModel.create({
         media: media,
         description: description,
-        datePosted: datePosted,
-        likes: likes,
-        owner: owner
+        userId: owner
     })
     .then (databaseData => {
         res.json({
