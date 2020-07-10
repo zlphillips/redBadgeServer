@@ -7,7 +7,7 @@ var profile = require("./controllers/profilecontroller")
 var comment = require("./controllers/commentcontroller")
 var sequelize = require('./db');
 
-// {force:true} to update tables, then delete after you save
+// {force: true}
 sequelize.sync();
 app.use(express.json());
 app.use(require('./middleware/headers'));
