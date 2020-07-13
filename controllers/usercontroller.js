@@ -64,7 +64,7 @@ UserModel.findOne({
 })
 
 //corynne created this component to fetch username in posts
-router.get('/username', (req, res) => {
+router.get('/username', validateSession,  (req, res) => {
     UserModel.findOne({
         where : {username: req.body.user.username}
     }).then(user => res.status(200).json(user))
@@ -75,7 +75,7 @@ router.get('/username', (req, res) => {
 
 
 router.get('/:id', validateSession, (req, res) => {
-    UserModel.findOne({where: {id: req.params.id}})
+    UserModel.findOne({where: {id: req.params.id, }})
     .then(profile => res.status(200).json(profile))
     .catch(err => res.status(500).json(err));
 })

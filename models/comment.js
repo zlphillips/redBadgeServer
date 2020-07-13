@@ -9,6 +9,6 @@ module.exports = function (sequelize, DataTypes) {
           type: DataTypes.INTEGER,
       defaultValue: 0
     },
-    owner: DataTypes.INTEGER
+    
     });
   };
