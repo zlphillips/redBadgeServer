@@ -6,13 +6,13 @@ let validateSession = require('../middleware/validate-session')
 
 //New Profile
 router.post('/new-profile', validateSession, (req, res) => {
-    let owner = req.user.id;
+    let userId = req.user.id;
     let profilePic = req.body.profile.profilePic;
     let bio = req.body.profile.bio;
 
 ProfileModel
     .create({
-        userId: owner,
+        userId: userId,
         profilePic: profilePic,
         bio: bio
     })
