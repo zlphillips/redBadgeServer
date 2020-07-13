@@ -6,13 +6,21 @@ let validateSession = require('../middleware/validate-session')
 
 //New Profile
 router.post('/new-profile', validateSession, (req, res) => {
+<<<<<<< HEAD
     let owner = req.user.id;
+=======
+    let userId = req.user.id;
+>>>>>>> development
     let profilePic = req.body.profile.profilePic;
     let bio = req.body.profile.bio;
 
 ProfileModel
     .create({
+<<<<<<< HEAD
         userId: owner,
+=======
+        userId: userId,
+>>>>>>> development
         profilePic: profilePic,
         bio: bio
     })
@@ -32,7 +40,12 @@ router.get('/all-profiles', validateSession, (req, res) => {
 
 //Current user's profile
 router.get('/my-profile', validateSession, (req, res) => {
+<<<<<<< HEAD
     ProfileModel.findOne({where: {owner: req.user.id}})
+=======
+    console.log(req.user.id)
+    ProfileModel.findAll({where: {owner: req.user.id}})
+>>>>>>> development
     .then(profile => res.status(200).json(profile))
     .catch(err => res.status(500).json(err));
 });
