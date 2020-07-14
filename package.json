@@ -11,8 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^14.0.13",
-    "admin-bro": "^2.8.0",
-    "admin-bro-expressjs": "^2.1.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
