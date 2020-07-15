@@ -14,7 +14,7 @@ UserModel.create({
         lastName: req.body.user.lastName,
         email: req.body.user.email,
         username: req.body.user.username,
-        passwordhash: bcrypt.hashSync(req.body.user.password, 10)
+        passwordhash: bcrypt.hashSync(req.body.user.password, 12)
     })
     .then(
         function success(user) {
@@ -90,7 +90,7 @@ router.post('/adminsignup', (req, res) => {
             lastName: req.body.user.lastName,
             email: req.body.user.email,
             username: req.body.user.username,
-            passwordhash: bcrypt.hashSync(req.body.user.password, 10),
+            passwordhash: bcrypt.hashSync(req.body.user.password, 12),
             admin: req.body.user.admin
         })
         .then(
