@@ -9,7 +9,7 @@ var comment = require("./controllers/commentcontroller")
 var multer = require("./controllers/multercontroller")
 var sequelize = require('./db');
 
-// sequelize.sync({force: true});
+//sequelize.sync({force: true});
 sequelize.sync();
 app.use(express.json());
 app.use(require('./middleware/headers'));

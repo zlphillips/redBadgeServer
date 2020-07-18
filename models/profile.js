@@ -6,5 +6,8 @@ module.exports = function (sequelize, DataTypes) {
       bio: {
           type: DataTypes.STRING,
         allowNull: true},
+      owner: {
+        type: DataTypes.INTEGER,
+      }
     });
   };
