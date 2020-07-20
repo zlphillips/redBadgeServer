@@ -16,14 +16,8 @@ app.use(require('./middleware/headers'));
 app.use('/redBadge/user', user);
 app.use('/redBadge/post', post)
 app.use('/redBadge/profile', profile)
-app.use('/redBadge/comment', comment)
 app.use('/redBadge/multer', multer)
 app.listen(process.env.PORT, function () {
   console.log(`${process.env.PORT}`);
 });
-
-
-
-//multer code
-
 
