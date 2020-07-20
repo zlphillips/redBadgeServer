@@ -7,18 +7,14 @@ let validateSession = require('../middleware/validate-session')
 
 //New comment
 router.post('/new-comment', validateSession, (req, res) => {
-    let media = req.body.post.media;
-    let owner = req.body.user.username;
-    let description = req.body.post.desription; 
-    let datePosted = req.body.post.datePosted;
-    let likes = req.body.post.likes;
+    let media = req.body.comment.media;
+    let owner = req.user.id;
+    let description = req.body.comment.description; 
 
 CommentModel.create({
         media: media,
         description: description,
-        datePosted: datePosted,
-        likes: likes,
-        owner: owner
+        userId: owner
     })
     .then (databaseData => {
         res.json({
@@ -35,9 +31,14 @@ router.get('/all-comments', validateSession, (req, res) => {
 });
 
 //Edit comment
-router.put('./:id', validateSession, (req, res) => {
-    if (!req.errors) {
-        CommentModel.update(req.body.post, {where: {owner: req.user.id, id: req.params.id}})
+router.put('/:id', validateSession, (req, res) => {
+    if (!req.errors && (req.user.admin)){
+        CommentModel.destroy({where: {id:req.params.id}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(500).json(err));
+        }
+        else if (!req.errors){
+        CommentModel.destroy({where: {owner: req.user.id, id:req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
     } else {
@@ -46,9 +47,14 @@ router.put('./:id', validateSession, (req, res) => {
 })
 
 //Delete comment 
-router.delete('./:id', validateSession, (req, res) => {
-    if (!req.errors){
-        CommentModel.destroy({where: { owner: req.user.id, id: req.params.id}})
+router.delete('/:id', validateSession, (req, res) => {
+    if (!req.errors && (req.user.admin)){
+        CommentModel.destroy({where: {id:req.params.id}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(500).json(err));
+        }
+        else if (!req.errors){
+        CommentModel.destroy({where: {owner: req.user.id, id:req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
     } else {
