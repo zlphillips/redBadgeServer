@@ -72,7 +72,11 @@ router.get('/username', validateSession,  (req, res) => {
     .catch(err => res.status(500).json(err));
 })
 
-
+router.get('/all', validateSession, (req, res) => {
+    UserModel.findAll()
+    .then(users => res.status(200).json(users))
+    .then(err => status(500).json(err))
+})
 
 
 router.get('/:id', validateSession, (req, res) => {
