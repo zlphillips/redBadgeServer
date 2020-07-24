@@ -7,14 +7,14 @@ let validateSession = require('../middleware/validate-session')
 
 //New comment
 router.post('/new-comment', validateSession, (req, res) => {
-    let media = req.body.comment.media;
     let owner = req.user.id;
-    let description = req.body.comment.description; 
+    let description = req.body.comment.description;
+    let postId = req.body.comment.postId
 
 CommentModel.create({
-        media: media,
         description: description,
-        userId: owner
+        userId: owner,
+        postId: postId
     })
     .then (databaseData => {
         res.json({
@@ -29,6 +29,14 @@ router.get('/all-comments', validateSession, (req, res) => {
     .then(comment => res.status(200).json(comment))
     .catch(err => res.status(500).json(err));
 });
+
+//Get comment by postId
+
+router.get('/postcomments', validateSession, (req, res) => {
+    CommentModel.findAll({where: {postId:req.comment.postId}})
+    .then(comment => res.status(200).json(comment))
+    .catch(err => res.status(500).json(err))
+})
 
 //Edit comment
 router.put('/:id', validateSession, (req, res) => {
