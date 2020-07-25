@@ -1,10 +1,11 @@
-var jwt = require('jsonwebtoken'); //if you get an error stating something is being redeclared, switch it from a const to a var or let
-var User = require('../db').import('../models/user');
+const jwt = require('jsonwebtoken'); //if you get an error stating something is being redeclared, switch it from a const to a var or let
+const User = require('../db').import('../models/user');
 
 const validateSession = (req, res, next) => { 
     const token = req.headers.authorization;
-    console.log(token)
+    console.log(req.headers)
     jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+        // console.log(`INVALID TOKEN: ${decodedToken}`)
         if (!err && decodedToken) {
             User.findOne({ where: {id: decodedToken.id}})
             .then(user => {
@@ -12,7 +13,7 @@ const validateSession = (req, res, next) => {
                 req.user = user;
                 return next();
             })
-            .catch(err => next(err));
+            .catch(err => {next(err); console.log('this could be where it broke')})
         } else {
             req.errors = err;
             res.status(401).send("This is a bad token")
