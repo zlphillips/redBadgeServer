@@ -4,10 +4,10 @@ let router = express.Router();
 let sequelize = require("../db");
 let PostModel = sequelize.import("../models/posts")
 let validateSession = require('../middleware/validate-session')
-const myurl = 'mongodb://localhost:27017/redBadgeServer';
+//const myurl = 'mongodb://localhost:27017/redBadgeServer';
 const fs = require("fs")
-const mongoose = require("mongoose");
-mongoose.connect(myurl)
+//const mongoose = require("mongoose");
+//mongoose.connect(myurl)
 
 
 
