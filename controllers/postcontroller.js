@@ -80,7 +80,13 @@ router.put('/:id', validateSession, (req, res) => {
         PostModel.update(req.body.post, {where: {userId: req.user.id, id: req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
-    } else {
+    } 
+    else if(!req.errors) {
+        PostModel.update(req.body.post)
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(500).json(err))
+    }
+    else {
         res.status(500).json(req.errors);
     }
 })
