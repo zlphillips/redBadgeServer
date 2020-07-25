@@ -13,6 +13,7 @@ var sequelize = require('./db');
 sequelize.sync();
 app.use(express.json());
 app.use(require('./middleware/headers'));
+app.use('/redBadge/comment', comment)
 app.use('/redBadge/user', user);
 app.use('/redBadge/post', post)
 app.use('/redBadge/profile', profile)
