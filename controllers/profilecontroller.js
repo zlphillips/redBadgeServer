@@ -4,6 +4,7 @@ let sequelize = require("../db");
 let ProfileModel = sequelize.import("../models/profile")
 let validateSession = require('../middleware/validate-session')
 
+
 //New Profile
 router.post('/new-profile', validateSession, (req, res) => {
     let userId = req.user.id;
@@ -33,7 +34,7 @@ router.get('/all-profiles', validateSession, (req, res) => {
 //Current user's profile
 router.get('/my-profile', validateSession, (req, res) => {
     console.log(req.user.id)
-    ProfileModel.findAll({where: {owner: req.user.id}})
+    ProfileModel.findAll({where: {userId: req.user.id}})
     .then(profile => res.status(200).json(profile))
     .catch(err => res.status(500).json(err));
 });
@@ -51,7 +52,7 @@ router.put('/:id', validateSession, (req, res) => {
         .catch(err => res.status(500).json(err));
         }
         else if (!req.errors){
-        ProfileModel.destroy({where: {owner: req.user.id, id:req.params.id}})
+        ProfileModel.destroy({where: {userId: req.user.id, id:req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
     } else {
@@ -67,7 +68,7 @@ router.delete('/:id', validateSession, (req, res) => {
         .catch(err => res.status(500).json(err));
         }
         else if (!req.errors){
-        ProfileModel.destroy({where: {owner: req.user.id, id:req.params.id}})
+        ProfileModel.destroy({where: {userId: req.user.id, id:req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
     } else {
