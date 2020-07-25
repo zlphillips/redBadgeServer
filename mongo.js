@@ -1,5 +1,5 @@
 // const MongoClient = require('mongodb').MongoClient
-const myurl = 'mongodb://localhost:27017/redBadgeServer';
+// const myurl = 'mongodb://localhost:27017/redBadgeServer';
 
 // MongoClient.connect(myurl, (err, client) => {
 //     if (err) return console.log(err)
@@ -10,6 +10,6 @@ const myurl = 'mongodb://localhost:27017/redBadgeServer';
  
 
     
-    const mongoose = require("mongoose");
-    mongoose.connect(myurl)
-    module.exports = mongoose.connection
+    // const mongoose = require("mongoose");
+    // mongoose.connect(myurl)
+    // module.exports = mongoose.connection

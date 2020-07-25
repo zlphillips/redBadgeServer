@@ -1,7 +1,7 @@
 let express = require('express')
 let app = express.Router();
 const upload = require("../multer")
-const db = require("../mongo")
+// const db = require("../mongo")
 const fs = require("fs")
 
 
