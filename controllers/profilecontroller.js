@@ -4,6 +4,7 @@ let sequelize = require("../db");
 let ProfileModel = sequelize.import("../models/profile")
 let validateSession = require('../middleware/validate-session')
 
+
 //New Profile
 router.post('/new-profile', validateSession, (req, res) => {
     let userId = req.user.id;
