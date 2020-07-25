@@ -52,14 +52,14 @@ PostModel.create({
 
 //Get All Posts
 router.get('/all-posts', validateSession, (req, res) => {
-    PostModel.findAll()
+    PostModel.findAll({order: [["createdAt", "DESC"]]})
     .then(post => res.status(200).json(post))
     .catch(err => res.status(500).json(err));
 });
 
 //Get current user's posts
 router.get('/my-posts', validateSession, (req, res) => {
-    PostModel.findAll({ where: {owner: req.user.id}})
+    PostModel.findAll({ where: {userId: req.user.id}})
     .then(post => res.status(200).json(post))
     .catch(err => res.status(500).json(err));
 });
@@ -70,14 +70,14 @@ router.get('/:id', validateSession, (req, res) => {
 })
 
 //Edit post
-router.put('./:id', validateSession, (req, res) => {
+router.put('/:id', validateSession, (req, res) => {
     if (!req.errors && (req.user.admin)){
-        PostModel.update({where: {id:req.params.id}})
+        PostModel.update( req.body.post, {where: {id:req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
         }
     else if(!req.errors) {
-        PostModel.update(req.body.post, {where: {owner: req.user.id, id: req.params.id}})
+        PostModel.update(req.body.post, {where: {userId: req.user.id, id: req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
     } else {
@@ -93,7 +93,7 @@ router.delete('/:id', validateSession, (req, res) => {
         .catch(err => res.status(500).json(err));
         }
         else if (!req.errors){
-        PostModel.destroy({where: {owner: req.user.id, id:req.params.id}})
+        PostModel.destroy({where: {userId: req.user.id, id:req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
     } else {

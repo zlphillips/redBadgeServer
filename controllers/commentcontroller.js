@@ -7,14 +7,14 @@ let validateSession = require('../middleware/validate-session')
 
 //New comment
 router.post('/new-comment', validateSession, (req, res) => {
-    let media = req.body.comment.media;
-    let owner = req.user.id;
-    let description = req.body.comment.description; 
+    let userId = req.user.id;
+    let description = req.body.comment.description;
+    let postId = req.body.comment.postId
 
 CommentModel.create({
-        media: media,
         description: description,
-        userId: owner
+        userId: userId,
+        postId: postId
     })
     .then (databaseData => {
         res.json({
@@ -30,6 +30,14 @@ router.get('/all-comments', validateSession, (req, res) => {
     .catch(err => res.status(500).json(err));
 });
 
+//Get comment by postId
+
+router.get('/postcomments', validateSession, (req, res) => {
+    CommentModel.findAll({where: {postId:req.comment.postId}})
+    .then(comment => res.status(200).json(comment))
+    .catch(err => res.status(500).json(err))
+})
+
 //Edit comment
 router.put('/:id', validateSession, (req, res) => {
     if (!req.errors && (req.user.admin)){
@@ -38,7 +46,7 @@ router.put('/:id', validateSession, (req, res) => {
         .catch(err => res.status(500).json(err));
         }
         else if (!req.errors){
-        CommentModel.destroy({where: {owner: req.user.id, id:req.params.id}})
+        CommentModel.destroy({where: {userId: req.user.id, id:req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
     } else {
@@ -54,7 +62,7 @@ router.delete('/:id', validateSession, (req, res) => {
         .catch(err => res.status(500).json(err));
         }
         else if (!req.errors){
-        CommentModel.destroy({where: {owner: req.user.id, id:req.params.id}})
+        CommentModel.destroy({where: {userId: req.user.id, id:req.params.id}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(500).json(err));
     } else {
