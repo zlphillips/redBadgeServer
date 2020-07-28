@@ -6,31 +6,31 @@ let PostModel = sequelize.import("../models/posts")
 let validateSession = require('../middleware/validate-session')
 const myurl = 'mongodb://localhost:27017/redBadgeServer';
 const fs = require("fs")
-const mongoose = require("mongoose");
-mongoose.connect(myurl)
+//const mongoose = require("mongoose");
+//mongoose.connect(myurl)
 
 
 
 //multer upload
-const multer = require('multer');
+// const multer = require('multer');
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads')
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.fieldname + '-' + Date.now())
-    }
-  })
+// var storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, 'uploads')
+//     },
+//     filename: function (req, file, cb) {
+//       cb(null, file.fieldname + '-' + Date.now())
+//     }
+//   })
    
-  var upload = multer({ storage: storage })
+//   var upload = multer({ storage: storage })
   
 
 
 
 
 //New Post
-router.post('/new-post', validateSession, upload.single('quotes'), (req, res) => {
+router.post('/new-post', validateSession, (req, res) => {
     let media = req.body.post.media;
     console.log('hello:', req.body)
     let description = req.body.post.description;
