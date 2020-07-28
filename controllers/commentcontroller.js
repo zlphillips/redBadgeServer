@@ -32,8 +32,8 @@ router.get('/all-comments', validateSession, (req, res) => {
 
 //Get comment by postId
 
-router.get('/postcomments', validateSession, (req, res) => {
-    CommentModel.findAll({where: {postId: req.body.postId}})
+router.get('/postcomments/:id', validateSession, (req, res) => {
+    CommentModel.findAll({where: {postId: req.params.id}})
     .then(comment => res.status(200).json(comment))
     .catch(err => res.status(500).json(err))
 })
