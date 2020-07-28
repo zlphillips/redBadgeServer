@@ -25,7 +25,7 @@ CommentModel.create({
 
 //Get all comments
 router.get('/all-comments', validateSession, (req, res) => {
-    CommentModel.findAll()
+    CommentModel.findAll({where: {comment: req.body.postId}})
     .then(comment => res.status(200).json(comment))
     .catch(err => res.status(500).json(err));
 });
@@ -33,7 +33,7 @@ router.get('/all-comments', validateSession, (req, res) => {
 //Get comment by postId
 
 router.get('/postcomments', validateSession, (req, res) => {
-    CommentModel.findAll({where: {postId:req.comment.postId}})
+    CommentModel.findAll({where: {postId: req.body.postId}})
     .then(comment => res.status(200).json(comment))
     .catch(err => res.status(500).json(err))
 })

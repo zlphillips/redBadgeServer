@@ -73,7 +73,11 @@ router.get('/username', validateSession,  (req, res) => {
 })
 
 
-
+router.get('/all', validateSession, (req,res) => {
+    UserModel.findAll({order: [["createdAt", "DESC"]]})
+    .then(post => res.status(200).json(post))
+    .catch(err => res.status(500).json(err));
+})
 
 router.get('/:id', validateSession, (req, res) => {
     UserModel.findOne({where: {id: req.params.id, }})
