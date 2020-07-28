@@ -52,7 +52,7 @@ PostModel.create({
 
 //Get All Posts
 router.get('/all-posts', validateSession, (req, res) => {
-    PostModel.findAll()
+    PostModel.findAll({order:[['createdAt','DESC']]})
     .then(post => res.status(200).json(post))
     .catch(err => res.status(500).json(err));
 });
