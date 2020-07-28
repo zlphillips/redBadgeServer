@@ -12,25 +12,25 @@ const fs = require("fs")
 
 
 //multer upload
-const multer = require('multer');
+// const multer = require('multer');
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads')
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.fieldname + '-' + Date.now())
-    }
-  })
+// var storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, 'uploads')
+//     },
+//     filename: function (req, file, cb) {
+//       cb(null, file.fieldname + '-' + Date.now())
+//     }
+//   })
    
-  var upload = multer({ storage: storage })
+//   var upload = multer({ storage: storage })
   
 
 
 
 
 //New Post
-router.post('/new-post', validateSession,  (req, res) => {
+router.post('/new-post', validateSession, (req, res) => {
     console.log('hello:', req.body)
     let media = req.body.post.media;
     let description = req.body.post.description;
