@@ -29,4 +29,6 @@ commentModel.belongsTo(postsModel);
 
 
 
+
+
 module.exports = sequelize;
