@@ -1,5 +1,7 @@
-module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('comment', {
+const { DataTypes } = require('sequelize');
+const db = require('../db');
+
+    const CommentModel = db.define('comment', {
       description: DataTypes.STRING,
       likes: {
           type: DataTypes.INTEGER,
@@ -7,4 +9,5 @@ module.exports = function (sequelize, DataTypes) {
     },
     
     });
-  };
+    
+  module.exports = CommentModel;

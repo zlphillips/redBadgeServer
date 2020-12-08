@@ -1,79 +1,69 @@
-var express = require('express')
-var router = express.Router();
-var sequelize = require("../db");
-var UserModel = sequelize.import('../models/user');
-var jwt = require('jsonwebtoken')
-var bcrypt = require('bcryptjs')
-let validateSession = require('../middleware/validate-session')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
+const { Router } = require('express')
+const { UserModel }  = require('../models')
+const { UniqueConstraintError } = require('sequelize/lib/errors');
 
-//Sign Up
-router.post('/signup', (req, res) => {  //THIS WORKS
-const passwordhash = bcrypt.hashSync(req.body.user.password, 12)
-UserModel.create({
-        firstName: req.body.user.firstName,
-        lastName: req.body.user.lastName,
-        email: req.body.user.email,
-        username: req.body.user.username,
-        passwordhash: bcrypt.hashSync(req.body.user.password, 12)
-    })
-    .then(
-        function success(user) {
-            console.log(`admin? ${user.admin}`)
-            var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
-            res.status(200).json({
-                user: user,
-                message: 'New User Created',
-                sessionToken: token,
+const userController = Router();
 
-            })
-        },
-        function error(err) { 
-            res.send(500, err.message)
-        },
-    );
-});
 
-//Login
 
-router.post('/login', (req, res) => { //THIS WORKS
-UserModel.findOne({
-    where : { username: req.body.user.username }
-}).then(
-    function(user) {
-        // console.log(user)
-        if (user){
-            bcrypt.compare(req.body.user.password, user.passwordhash, function (err, matches) {
-                if (matches) {
-                    let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
-                   
-                    res.json({
-                        user: user,
-                        message: "Succesfully Logged In",
-                        sessionToken: token,
-                    })
-
-                } else {
-                    res.status(502).send({message: "Invalid password"});
-                }
-            });
-        } else {
-            //invalid login, or typo, or doesn't exist
-            res.status(500).send({message: "Invalid Login/ User not found"});
-        }
+userController.post('/signup', async (req, res) => {
+    console.log('yeet');
+    let { firstName, lastName, email, username, password  } = req.body.user; // The order of these matters, must be in same order as you would JSON.stringify 
+    try {       // try /catch/ is like a .then() .catch() returned by our asynchronous function, except it does NOT return a promise
+      await UserModel.create({
+        firstName,
+        lastName,
+        email,
+        username,
+        password: bcrypt.hashSync(password, 12)
+      });
+      res.status(201).json({
+        message: 'User registered!'
+      });
+    } catch (e) {
+      if (e instanceof UniqueConstraintError) { // new sequelize error that checks if email is already being used
+        res.status(409).json({
+          message: 'Email already in use.'
+        });
+      } else {
+        res.status(500).json({
+          message: 'Failed to register user'
+        });
+      }
     }
- )
-})
-
-//corynne created this component to fetch username in posts
-router.get('/username', validateSession,  (req, res) => {
-    UserModel.findOne({
-        where : {username: req.body.user.username}
-    }).then(user => res.status(200).json(user))
-    .catch(err => res.status(500).json(err));
-})
+  });
 
 
-router.get('/all', validateSession, (req,res) => {
+  userController.post('/login', async (req, res) => {
+    let { username, password } = req.body.user;
+    try {
+      let loginUser = await UserModel.findOne({ //setting to login
+        where: {
+          username
+        }
+      });
+      if (loginUser && await bcrypt.compare(password, loginUser.password)) {
+        const token = jwt.sign({ id: loginUser.id }, process.env.JWT_SECRET);
+        res.status(200).json({
+          message: 'Login succeeded',
+          token
+        });
+      } else {
+        res.status(401).json({
+          message: 'Login failed'
+        });
+      }
+    } catch (e) {
+      res.status(500).json({
+        message: 'Error logging in'
+      });
+    }
+  })
+  
+
+userController.get('/allusers', (req,res) => {
     UserModel.findAll({order: [["createdAt", "DESC"]]})
     .then(post => res.status(200).json(post))
     .catch(err => res.status(500).json(err));
@@ -86,31 +76,33 @@ router.get('/:id', validateSession, (req, res) => {
 })
 
 
-//Admin Sign Up
-router.post('/adminsignup', (req, res) => {  
-    const passwordhash = bcrypt.hashSync(req.body.user.password, 12)
-    UserModel.create({
-            firstName: req.body.user.firstName,
-            lastName: req.body.user.lastName,
-            email: req.body.user.email,
-            username: req.body.user.username,
-            passwordhash: bcrypt.hashSync(req.body.user.password, 12),
-            admin: req.body.user.admin
-        })
-        .then(
-            function success(user) {
-                console.log(`user: ${user.admin}`)
-                var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
-                res.status(200).json({
-                    user: user,
-                    message: 'New Admin Created',
-                    sessionToken: token,
-                })
-            },
-            function error(err) { 
-                res.send(500, err.message)
-            },
-        );
-    });
+
+    userController.post('/adminsignup', async (req, res) => {
+        console.log('yeet');
+        let { firstName, lastName, email, password, admin } = req.body.user;
+        try {
+          await UserModel.create({
+            firstName,
+            lastName,
+            email,
+            username,
+            password: bcrypt.hashSync(password, 12),
+            admin
+          });
+          res.status(201).json({
+            message: 'Administrative user registered!'
+          });
+        } catch (e) {
+          if (e instanceof UniqueConstraintError) {
+            res.status(409).json({
+              message: 'Email already in use.'
+            });
+          } else {
+            res.status(500).json({
+              message: 'Failed to register administrative user'
+            });
+          }
+        }
+      });
 
 module.exports = router;

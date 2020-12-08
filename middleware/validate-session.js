@@ -1,24 +1,32 @@
-const jwt = require('jsonwebtoken'); //if you get an error stating something is being redeclared, switch it from a const to a var or let
-const User = require('../db').import('../models/user');
+const jwt = require('jsonwebtoken');
+const { User } = require('../models');
 
-const validateSession = (req, res, next) => { 
-    const token = req.headers.authorization;
-    console.log(req.headers)
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-        // console.log(`INVALID TOKEN: ${decodedToken}`)
-        if (!err && decodedToken) {
-            User.findOne({ where: {id: decodedToken.id}})
-            .then(user => {
-                if (!user) throw 'err';
-                req.user = user;
-                return next();
-            })
-            .catch(err => {next(err); console.log('this could be where it broke')})
-        } else {
-            req.errors = err;
-            res.status(401).send("This is a bad token")
+const ValidateJWTMiddleware = (req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return next();
+  } else if (req.headers.authorization && req.headers.authorization.includes('Bearer')) {
+    const { authorization } = req.headers;
+    const payload = authorization ? jwt.verify(authorization.includes('Bearer') ? authorization.split(' ')[1] : authorization, process.env.JWT_SECRET): undefined;
+    if (payload) {
+      User.findOne({
+        where: {
+          id: payload.id
         }
-    })
-};
+      })
+      .then(user => {
+        req.user = user;
+        next();
+      })
+    } else {
+      res.status(401).json({
+        message: 'Not allowed'
+      });
+    }
+  } else {
+    res.status(401).json({
+      message: 'Not allowed'
+    });
+  }
+}
 
-module.exports = validateSession;
+module.exports = ValidateJWTMiddleware;

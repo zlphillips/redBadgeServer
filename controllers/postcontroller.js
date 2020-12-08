@@ -1,67 +1,84 @@
-let express = require('express')
-let app = express();
-let router = express.Router();
-let sequelize = require("../db");
-let PostModel = sequelize.import("../models/posts")
-let validateSession = require('../middleware/validate-session')
-//const myurl = 'mongodb://localhost:27017/redBadgeServer';
-const fs = require("fs")
-//const mongoose = require("mongoose");
-//mongoose.connect(myurl)
+const { Router } = require("express");
+const { ProfileModel } = require("../models");
 
+const PostController = Router();
 
-
-//multer upload
-// const multer = require('multer');
-
-// var storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//       cb(null, 'uploads')
-//     },
-//     filename: function (req, file, cb) {
-//       cb(null, file.fieldname + '-' + Date.now())
-//     }
-//   })
-   
-//   var upload = multer({ storage: storage })
-  
 
 
 
 
 //New Post
-router.post('/new-post', validateSession, (req, res) => {
-    console.log('hello:', req.body)
-    let media = req.body.post.media;
-    let description = req.body.post.description;
-    // let likes = req.body.post.likes;
-    let owner = req.user.id
-
-PostModel.create({
-        media: media,
-        description: description,
-        // likes: likes,
-        userId: owner
-    })
-    .then (databaseData => {
-        res.json({
-            data: databaseData,
-        });  
-    });
+PostController.post('/new-post', (req, res) => {
+    try {
+        const { media, description, likes } = req.body.profile;
+        const userId = req.user.id
+        const post = await PostModel.findOne({
+          where: {
+            id: userId,
+          },
+        });
+        post && description
+          ? ProfileModel.create({ 
+             media, 
+             description, 
+             likes,
+             createdByUser: userId 
+            })
+          : res.status(404).json({ message: "User not found" });
+        res.status(200).json({
+          message: "Profile successfully created",
+        });
+      } catch (e) {
+        console.log(e);
+        res.status(500).json({
+          message: "Failed to make a new profile",
+        });
+      }
 });
 
 //Get All Posts
-router.get('/all-posts', validateSession, (req, res) => {
-    PostModel.findAll({order: [["createdAt", "DESC"]]})
-    .then(post => res.status(200).json(post))
-    .catch(err => res.status(500).json(err));
-});
+router.get('/all-posts', (req, res) => {
+   try {
+       const posts = PostModel.findAll()
+       if (posts) {
+        res.status(200).json({
+          results: posts,
+        });
+      } else {
+        res.status(404).json({
+          message: "No posts found for user",
+        });
+      }
+    } catch (e) {
+      res.status(500).message({
+        message: "Failed to retrieve posts for user",
+      });
+    }
+   });
 
 //Get current user's posts
 router.get('/my-posts', validateSession, (req, res) => {
-    PostModel.findAll({ where: {userId: req.user.id}})
-    .then(post => res.status(200).json(post))
-    .catch(err => res.status(500).json(err));
+    try {
+        const userId = req.user.id
+        const posts = await ToDoList.findAll({
+          where: {
+            createdBy: userId,
+          },
+        });
+        if (lists) {
+          res.status(200).json({
+            results: posts,
+          });
+        } else {
+          res.status(404).json({
+            message: "No posts found for user",
+          });
+        }
+      } catch (e) {
+        res.status(500).message({
+          message: "Failed to retrieve posts for user",
+        });
+      }    
 });
 
 //Get one post
@@ -108,4 +125,84 @@ router.delete('/:id', validateSession, (req, res) => {
 })
 
 
-module.exports = router
+
+PostController.route("/:id")
+  .get(async (req, res) => {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.id
+      const found = await PostModel.findOne({
+        where: {
+          id: postId,
+          createdByUser: userId,
+        }
+      });
+      if (postsFound) {
+        res.status(200).json({
+          result: postsFound.toJSON(),
+        });
+      } else {
+        res.status(404).json({
+          message: "Profile not found",
+        });
+      }
+    } catch (e) {
+      res.status(500).json({
+        message: "Failed to fetch profile",
+      });
+    }
+  })
+  .put(async (req, res) => {
+    try {
+      const { media, description, likes } = req.body.profile;
+      const PostToUpdate = await PosteModel.findOne({
+        where: {
+          id: req.params.id,
+          createdByUser: req.user.id,
+        },
+      });
+      if (PostToUpdate && description) {
+        PostToUpdate.media = media;
+        PostToUpdate.description = description
+        PostToUpdate.likes = likes
+        await PostToUpdate.save();
+        res.status(200).json({
+          message: "Successfully updated profile",
+        });
+      } else {
+        res.status(404).json({
+          message:
+            "Post description missing, post not found, or user unauthorized to edit",
+        });
+      }
+    } catch (e) {
+      res.status(500).json({
+        message: "Failed update profile",
+      });
+    }
+  })
+  .delete(async (req, res) => {
+    try {
+      const userId = req.user.id
+      const PostToRemove = await ProfileModel.findOne({
+        where: {
+          id: req.params.id,
+          createdByUser: userId,
+        },
+      });
+      PostToRemove && (req.user.admin)
+        ? PostToRemove.destroy()
+        : res.status(404).json({
+            message: "Post not found or post does not belong to user",
+          });
+      res.status(200).json({
+        message: "Successfully removed post",
+      });
+    } catch (e) {
+      res.status(500).json({
+        message: "Failed to delete post",
+      });
+    }
+  });
+
+module.exports = PostController

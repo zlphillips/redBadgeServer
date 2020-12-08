@@ -1,5 +1,7 @@
-module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('user', {
+const { DataTypes } = require('sequelize');
+const db = require('../db');
+
+  const UserModel = db.define('user', {
     firstName: {
       type: DataTypes.STRING,
       allowNull: false
@@ -22,6 +24,8 @@ module.exports = function (sequelize, DataTypes) {
     admin: {
       type: DataTypes.BOOLEAN,
       allowNull: true
-    }
+    },
+    
   });
-};
+
+module.exports = UserModel;
